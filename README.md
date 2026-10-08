@@ -34,7 +34,7 @@ A full-stack streetwear store built as a portfolio project: storefront, checkout
 - Day/Night theme, scrolling promo bar, animated hero video with 3D tilt and parallax
 
 **Checkout & accounts**
-- Guest or logged-in checkout, saved address, card (test mode: only brand + last 4 digits reach the server) or QR transfer with slip upload
+- Account required to add to cart and check out (enforced on the API too); saved address, card (test mode: only brand + last 4 digits reach the server) or QR transfer with slip upload
 - Discount codes (percent off, one per account, enforced by a unique index)
 - Order history, tracking timeline, password reset with a 6-digit code
 

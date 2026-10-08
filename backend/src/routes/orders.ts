@@ -37,7 +37,8 @@ const upload = multer({
 const newOrderNo = () => "VV-" + crypto.randomBytes(5).toString("hex").toUpperCase().slice(0, 8);
 
 /* ---------- Place an order ---------- */
-ordersRouter.post("/", upload.single("slip"), ah(async (req, res) => {
+// Customers must be logged in to order. requireAuth runs before multer, so a guest's slip is never saved.
+ordersRouter.post("/", requireAuth, upload.single("slip"), ah(async (req, res) => {
   const removeSlip = () => req.file && fs.promises.unlink(req.file.path).catch(() => {});
   let tx: sql.Transaction | null = null;
   try {

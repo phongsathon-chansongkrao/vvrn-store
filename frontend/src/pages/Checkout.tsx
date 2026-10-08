@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
-import { Field, Radio, SelectField, btnPrimary } from "../components/forms";
+import { Field, Radio, SelectField, btnGhost, btnPrimary } from "../components/forms";
+import { AuthShell } from "./Auth";
 import { DemoQR } from "../components/DemoQR";
 import { OrderSummary, discountOff } from "../components/OrderSummary";
 import { COUNTRIES, EMPTY_ADDR, SHIPPING, money } from "../lib/data";
@@ -85,6 +86,21 @@ export function Checkout({ items, onPlaced }: any) {
       return (e as Error).message;
     }
   };
+  // Ordering needs an account (the backend refuses guest orders too). The cart stays in this browser.
+  if (!auth.user) {
+    return (
+      <AuthShell title="Checkout" sub="Log in or create an account to place your order. Your cart will be waiting.">
+        <div className="mt-8 flex gap-3">
+          <a href="#/login?next=checkout" className={btnPrimary + " flex-1 inline-flex items-center justify-center"}>
+            Log in
+          </a>
+          <a href="#/register?next=checkout" className={btnGhost + " flex-1 inline-flex items-center justify-center"}>
+            Create account
+          </a>
+        </div>
+      </AuthShell>
+    );
+  }
   if (items.length === 0) {
     return (
       <main className="mx-auto max-w-[1440px] px-6 lg:px-12 py-24 text-center">
@@ -257,15 +273,6 @@ export function Checkout({ items, onPlaced }: any) {
     <main className="mx-auto max-w-[1440px] px-6 lg:px-12 py-10 lg:py-14">
       <div className="flex flex-wrap items-end justify-between gap-4 border-b border-line pb-6">
         <h1 className="font-display text-[56px] lg:text-[72px] leading-[0.9] text-bone">Checkout</h1>
-        {!auth.user && (
-          <p className="text-[13px] text-ash">
-            {"Have an account? "}
-            <a href="#/login?next=checkout" className="text-amber underline underline-offset-4">
-              Log in
-            </a>
-            {" to save this order to your history."}
-          </p>
-        )}
       </div>
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-8 lg:gap-12 items-start">
         <div className="space-y-4">

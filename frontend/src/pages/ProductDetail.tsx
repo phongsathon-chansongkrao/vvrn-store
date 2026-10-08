@@ -11,6 +11,7 @@ import { api } from "../lib/api";
 
 export function ProductDetail({ id, initialColor, onAdd }: any) {
   const shop = React.useContext(ShopCtx);
+  const auth = React.useContext(AuthCtx);
   const p = findProduct(id);
   const sizes = sizesOf(p);
   const single = sizes.length === 1;
@@ -255,25 +256,44 @@ export function ProductDetail({ id, initialColor, onAdd }: any) {
               <Stepper value={qty} onChange={setQty} max={maxQty} />
             </div>
           )}
-          <button
-            type="button"
-            onClick={() =>
-              ready &&
-              onAdd({
-                id: p.id,
-                color,
-                size,
-                qty,
-              })
-            }
-            disabled={!ready}
-            className={
-              "mt-8 w-full h-14 font-mono text-[12px] tracking-[0.12em] uppercase transition-colors " +
-              (ready ? "bg-amber text-noir hover:brightness-110" : "border border-line text-ash cursor-not-allowed")
-            }
-          >
-            {label}
-          </button>
+          {!auth.user && !out ? (
+            // Shopping needs an account: send guests to log in, then straight back to this product and color
+            <a
+              href={`#/login?next=${encodeURIComponent(`product/${p.id}?c=${color}`)}`}
+              className="mt-8 w-full h-14 inline-flex items-center justify-center font-mono text-[12px] tracking-[0.12em] uppercase bg-amber text-noir hover:brightness-110"
+            >
+              Log in to add to cart
+            </a>
+          ) : (
+            <button
+              type="button"
+              onClick={() =>
+                ready &&
+                onAdd({
+                  id: p.id,
+                  color,
+                  size,
+                  qty,
+                })
+              }
+              disabled={!ready}
+              className={
+                "mt-8 w-full h-14 font-mono text-[12px] tracking-[0.12em] uppercase transition-colors " +
+                (ready ? "bg-amber text-noir hover:brightness-110" : "border border-line text-ash cursor-not-allowed")
+              }
+            >
+              {label}
+            </button>
+          )}
+          {!auth.user && !out && (
+            <p className="mt-2 text-[12px] text-ash">
+              {"New here? "}
+              <a href={`#/register?next=${encodeURIComponent(`product/${p.id}?c=${color}`)}`} className="text-amber underline underline-offset-4">
+                Create an account
+              </a>
+              {" to shop."}
+            </p>
+          )}
           {size && left === 0 && <NotifyMe key={`${color}|${size}`} p={p} color={color} size={size} />}
           <ul className="mt-6 space-y-2 text-[12px] text-ash">
             <li>Free standard shipping on every order.</li>

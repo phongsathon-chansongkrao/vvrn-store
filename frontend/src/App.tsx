@@ -181,6 +181,11 @@ export default function App() {
   const count = cart.reduce((s, it) => s + it.qty, 0);
 
   const addToCart = ({ id, color, size, qty }: Omit<CartItem, "key">) => {
+    if (!user) {
+      // The product page already shows "Log in to add to cart"; this is the safety net
+      setToast({ n: Date.now(), text: "Log in to add items to your cart.", action: "Log in", onAction: () => (location.hash = "#/login") });
+      return;
+    }
     const p = findProduct(id);
     const key = `${id}|${color}|${size}`;
     const cap = Math.min(10, stockOf(p, color, size));
