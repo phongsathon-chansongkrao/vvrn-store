@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Theme tokens (RGB channels). Night = default; Day via <html data-theme="light">. */
+:root {
+  --ink: 10 10 10;
+  --panel: 22 22 22;
+  --line: 42 42 42;
+  --bone: 233 231 226;
+  --ash: 143 141 136;
+  --amber: 232 163 43;
+  --fg: 255 255 255;
+  --ghost-a: #1c1c1c;
+  --ghost-b: #161616;
+  --shot-a: #232323;
+  --shot-b: #171717;
+  --shot-c: #121212;
+}
+:root[data-theme="light"] {
+  --ink: 244 242 237;
+  --panel: 234 231 224;
+  --line: 214 210 202;
+  --bone: 20 20 20;
+  --ash: 110 107 101;
+  --amber: 196 132 18;
+  --fg: 0 0 0;
+  --ghost-a: #e6e3dc;
+  --ghost-b: #eceae4;
+  --shot-a: #f7f6f2;
+  --shot-b: #ebe8e1;
+  --shot-c: #e2dfd7;
+  color-scheme: light;
+}
+
+/* Site-wide styles (marquee, grain, animations, drawer). */
+:root {
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: rgb(var(--ink));
+  color-scheme: dark;
+  transition: background-color .25s;
+}
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+body { background: rgb(var(--ink)); color: rgb(var(--bone)); margin: 0; transition: background-color .25s, color .25s; }
+
+.marquee-track { display: flex; width: max-content; animation: marquee 38s linear infinite; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+.ghost {
+  writing-mode: vertical-rl;
+  color: transparent;
+  background: linear-gradient(var(--ghost-a), var(--ghost-b));
+  -webkit-background-clip: text;
+  background-clip: text;
+  letter-spacing: 0.02em;
+}
+
+.hero-frame { position: relative; overflow: hidden; }
+.grain {
+  position: absolute; inset: 0; pointer-events: none; opacity: .22; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* ---------- Home hero motion (variables set by useHeroMotion in Home.tsx) ---------- */
+.hero-scene { --mx: 0; --my: 0; }
+/* Ghost "DROP 001" sits far back: drifts against the mouse */
+.depth-back {
+  transform: translate(calc(var(--mx) * -26px), calc(-50% + var(--my) * -18px));
+  transition: transform .6s cubic-bezier(.2,.7,.2,1);
+}
+/* Headline sits in front: drifts a little with the mouse */
+.depth-front {
+  transform: translate(calc(var(--mx) * 10px), calc(var(--my) * 6px));
+  transition: transform .5s cubic-bezier(.2,.7,.2,1);
+}
+.tilt {
+  --hx: 0; --hy: 0; --hover: 0;
+  transform: perspective(1100px) rotateY(calc(var(--hx) * 7deg)) rotateX(calc(var(--hy) * -7deg)) scale(calc(1 + var(--hover) * .015));
+  transition: transform .45s cubic-bezier(.2,.7,.2,1);
+  will-change: transform;
+}
+/* Slow zoom so the photo is never completely still (also on phones) */
+.kenburns { animation: kenburns 22s ease-in-out infinite alternate; transform-origin: 50% 35%; }
+@keyframes kenburns { from { transform: scale(1.02); } to { transform: scale(1.1) translate(-1.2%, -1%); } }
+.cta-arrow { display: inline-block; transition: transform .3s cubic-bezier(.2,.7,.2,1); }
+.cta:hover .cta-arrow, .cta:focus-visible .cta-arrow { transform: translateX(6px); }
+
+.reveal { opacity: 0; transform: translateY(14px); animation: rise .8s cubic-bezier(.2,.7,.2,1) forwards; }
+@keyframes rise { to { opacity: 1; transform: none; } }
+
+.shot { background: radial-gradient(120% 90% at 50% 35%, var(--shot-a) 0%, var(--shot-b) 60%, var(--shot-c) 100%); }
+.garment { transition: transform .5s cubic-bezier(.2,.7,.2,1); }
+.card:hover .garment { transform: scale(1.04); }
+
+.drawer { transition: transform .35s cubic-bezier(.2,.7,.2,1); }
+.scrim { transition: opacity .3s; }
+.toast { animation: toastIn .3s ease-out; }
+@keyframes toastIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+a:focus-visible, button:focus-visible { outline: 2px solid rgb(var(--amber)); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+  .reveal { animation: none; opacity: 1; transform: none; }
+  .garment, .drawer, .scrim { transition: none; }
+  .toast { animation: none; }
+  .kenburns { animation: none; }
+  .tilt, .depth-front { transform: none; transition: none; }
+  .depth-back { transform: translateY(-50%); transition: none; }
+  .cta-arrow { transition: none; }
+}

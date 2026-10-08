@@ -1,0 +1,10 @@
+node_modules
+dist
+.env
+.env.local
+backend/uploads
+.DS_Store
+
+# Local test renders, not needed in the repo
+sample-photos/
+*.log

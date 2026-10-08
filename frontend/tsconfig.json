@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+
+    /* The UI components were ported from plain JavaScript, so checking is relaxed for now.
+       Turn "strict" on and add prop types file by file when you're ready. */
+    "strict": false,
+    "noImplicitAny": false
+  },
+  "include": ["src"]
+}
